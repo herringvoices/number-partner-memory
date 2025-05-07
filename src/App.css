@@ -80,7 +80,8 @@
 }
 
 .card-container.matched .card-front {
-  background-color: #e8f5e9;
+  opacity: 0.5;
+  
 }
 
 @keyframes pulse {

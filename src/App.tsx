@@ -1,21 +1,9 @@
 import { useState, useEffect } from "react";
 import "./App.css";
-import {
-  Container,
-  Row,
-  Col,
-  Button,
-  Form,
-  Card as BootstrapCard,
-} from "react-bootstrap";
-
-// Define the card type for our game
-interface GameCard {
-  id: number;
-  value: number;
-  isFlipped: boolean;
-  isMatched: boolean;
-}
+import { Container } from "react-bootstrap";
+import GameSetup from "./components/GameSetup";
+import GameBoard from "./components/GameBoard";
+import type { GameCard } from "./components/Card";
 
 function App() {
   const [bigNumber, setBigNumber] = useState<number>(10);
@@ -136,129 +124,25 @@ function App() {
     setGameStarted(true);
   };
 
-  // Calculate grid dimensions based on number of cards
-  const getGridDimensions = () => {
-    const totalCards = (bigNumber + 1) * 2;
-    let cols = 4; // Default
-
-    if (totalCards <= 12) cols = 4;
-    else if (totalCards <= 20) cols = 5;
-    else if (totalCards <= 30) cols = 6;
-    else cols = 8;
-
-    return cols;
-  };
-
-  // Game input form
-  const renderGameSetup = () => (
-    <Row className="justify-content-center my-4">
-      <Col xs={12} md={6} className="text-center">
-        <BootstrapCard className="shadow-sm bg-light">
-          <BootstrapCard.Body>
-            <BootstrapCard.Title className="mb-4">
-              Number Partner Memory
-            </BootstrapCard.Title>
-            <Form>
-              <Form.Group className="mb-3">
-                <Form.Label>Choose a Big Number:</Form.Label>
-                <Form.Control
-                  type="number"
-                  min="1"
-                  value={tempBigNumber}
-                  className="text-center w-auto mx-auto fs-2 border-1 border-primary rounded"
-                  onChange={(e) => setTempBigNumber(e.target.value)}
-                />
-                <Form.Text className="text-muted">
-                  Cards will contain numbers from 0 to your chosen number.
-                </Form.Text>
-              </Form.Group>
-              <Button variant="primary" onClick={handleStartGame}>
-                Start Game
-              </Button>
-            </Form>
-          </BootstrapCard.Body>
-        </BootstrapCard>
-      </Col>
-    </Row>
-  );
-
-  // Game board with cards
-  const renderGameBoard = () => {
-    const cols = getGridDimensions();
-
-    return (
-      <>
-        <Row className="justify-content-center mb-3">
-          <Col xs={12} className="text-center">
-            <h2>Number Partner Memory</h2>
-            <p>
-              Find pairs of numbers that add up to {bigNumber}. Moves: {moves} |
-              Pairs: {matchedPairs}/{totalPairs}
-            </p>
-            <Button
-              variant="outline-secondary"
-              className="mb-3"
-              onClick={() => setGameStarted(false)}
-            >
-              New Game
-            </Button>
-          </Col>
-        </Row>
-
-        <Row className="justify-content-center">
-          <Col xs={12} md={10} lg={8}>
-            <div
-              className="game-board"
-              style={{
-                display: "grid",
-                gridTemplateColumns: `repeat(${cols}, 1fr)`,
-                gap: "10px",
-              }}
-            >
-              {cards.map((card) => (
-                <div
-                  key={card.id}
-                  className={`card-container ${
-                    card.isFlipped ? "flipped" : ""
-                  } ${card.isMatched ? "matched" : ""}`}
-                  onClick={() => handleCardClick(card)}
-                >
-                  <div className="memory-card">
-                    <div className="card-back">
-                      <img src="/back.png" alt="Card Back" />
-                    </div>
-                    <div className="card-front">
-                      <div className="number-display">{card.value}</div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Col>
-        </Row>
-
-        {matchedPairs === totalPairs && (
-          <Row className="justify-content-center mt-4">
-            <Col xs={12} className="text-center">
-              <BootstrapCard bg="success" text="white" className="mb-3">
-                <BootstrapCard.Body>
-                  <h3>Congratulations!</h3>
-                  <p>You completed the game in {moves} moves!</p>
-                  <Button variant="light" onClick={() => setGameStarted(false)}>
-                    Play Again
-                  </Button>
-                </BootstrapCard.Body>
-              </BootstrapCard>
-            </Col>
-          </Row>
-        )}
-      </>
-    );
-  };
-
   return (
     <Container className="my-4">
-      {!gameStarted ? renderGameSetup() : renderGameBoard()}
+      {!gameStarted ? (
+        <GameSetup
+          tempBigNumber={tempBigNumber}
+          setTempBigNumber={setTempBigNumber}
+          handleStartGame={handleStartGame}
+        />
+      ) : (
+        <GameBoard
+          bigNumber={bigNumber}
+          cards={cards}
+          moves={moves}
+          matchedPairs={matchedPairs}
+          totalPairs={totalPairs}
+          onCardClick={handleCardClick}
+          onNewGame={() => setGameStarted(false)}
+        />
+      )}
     </Container>
   );
 }
