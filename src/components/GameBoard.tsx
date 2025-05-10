@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Row, Col, Button } from "react-bootstrap";
 import Card, { type GameCard } from "./Card";
 import VictoryMessage from "./VictoryMessage";
@@ -22,20 +22,38 @@ const GameBoard: React.FC<GameBoardProps> = ({
   onCardClick,
   onNewGame,
 }) => {
-  // Calculate grid dimensions based on number of cards
-  const getGridDimensions = () => {
-    const totalCards = (bigNumber + 1) * 2;
-    let cols = 4; // Default
+  const [cols, setCols] = useState(4);
 
-    if (totalCards <= 12) cols = 4;
-    else if (totalCards <= 20) cols = 5;
-    else if (totalCards <= 30) cols = 6;
-    else cols = 8;
+  // Calculate grid dimensions based on number of cards and screen size
+  useEffect(() => {
+    const calculateGridDimensions = () => {
+      const totalCards = (bigNumber + 1) * 2;
+      let newCols = 4; // Default
 
-    return cols;
-  };
+      // Calculate columns based on card count
+      if (totalCards <= 12) newCols = 4;
+      else if (totalCards <= 20) newCols = 5;
+      else if (totalCards <= 30) newCols = 6;
+      else newCols = 8;
 
-  const cols = getGridDimensions();
+      // Limit to 3 columns on small screens
+      if (window.innerWidth < 768) {
+        newCols = Math.min(newCols, 3);
+      }
+
+      setCols(newCols);
+    };
+
+    calculateGridDimensions();
+
+    // Add resize listener
+    window.addEventListener("resize", calculateGridDimensions);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("resize", calculateGridDimensions);
+    };
+  }, [bigNumber]);
 
   return (
     <>

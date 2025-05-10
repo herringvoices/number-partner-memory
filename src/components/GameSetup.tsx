@@ -27,7 +27,7 @@ const GameSetup: React.FC<GameSetupProps> = ({
                   type="number"
                   min="1"
                   value={tempBigNumber}
-                  className="text-center w-auto mx-auto fs-2 border-1 border-primary rounded"
+                  className="text-center number-input mx-auto fs-2 border-1 border-primary rounded"
                   onChange={(e) => setTempBigNumber(e.target.value)}
                 />
                 <Form.Text className="text-muted">
