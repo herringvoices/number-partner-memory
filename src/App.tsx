@@ -4,6 +4,8 @@ import { Container } from "react-bootstrap";
 import GameSetup from "./components/GameSetup";
 import GameBoard from "./components/GameBoard";
 import type { GameCard } from "./components/Card";
+import InfoIcon from "./components/InfoIcon";
+import TeachingStrategiesModal from "./components/TeachingStrategiesModal";
 
 function App() {
   const [bigNumber, setBigNumber] = useState<number>(10);
@@ -14,6 +16,7 @@ function App() {
   const [matchedPairs, setMatchedPairs] = useState<number>(0);
   const [totalPairs, setTotalPairs] = useState<number>(0);
   const [moves, setMoves] = useState<number>(0);
+  const [showTeachingModal, setShowTeachingModal] = useState<boolean>(false);
 
   // Initialize the game when bigNumber changes or game starts
   useEffect(() => {
@@ -143,6 +146,11 @@ function App() {
           onNewGame={() => setGameStarted(false)}
         />
       )}
+      <InfoIcon onClick={() => setShowTeachingModal(true)} />
+      <TeachingStrategiesModal
+        show={showTeachingModal}
+        onHide={() => setShowTeachingModal(false)}
+      />
     </Container>
   );
 }
