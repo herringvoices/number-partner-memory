@@ -2,6 +2,9 @@
 
 A fun and interactive memory card matching game built with React, TypeScript, and Vite.
 
+## Deployed Site
+- [Number Partner Memory](https://numberpartnermemory.netlify.app/)
+
 ## Game Rules
 
 1. The game starts with all cards face down.
